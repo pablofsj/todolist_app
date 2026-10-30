@@ -1,0 +1,262 @@
+/* Aurora UI: deep gradient backdrop, glass surfaces and soft color glows. */
+
+.home-page {
+  position: relative;
+  z-index: 0;
+  background: var(--app-bg);
+}
+
+.home-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--app-bg-gradient);
+  pointer-events: none;
+}
+
+.aurora-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora-bg span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+
+.aurora-bg span:nth-child(1) {
+  width: 70vmax;
+  height: 70vmax;
+  top: -30vmax;
+  left: -25vmax;
+  background: radial-gradient(circle, #7c5cff 0%, transparent 68%);
+}
+
+.aurora-bg span:nth-child(2) {
+  width: 55vmax;
+  height: 55vmax;
+  top: 15%;
+  right: -25vmax;
+  background: radial-gradient(circle, #22d3ee 0%, transparent 68%);
+  animation-delay: -7s;
+}
+
+.aurora-bg span:nth-child(3) {
+  width: 60vmax;
+  height: 60vmax;
+  bottom: -30vmax;
+  left: 5%;
+  background: radial-gradient(circle, #f472b6 0%, transparent 68%);
+  animation-delay: -14s;
+}
+
+.ion-palette-dark .aurora-bg span {
+  opacity: 0.55;
+}
+
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(6vmax, 4vmax, 0) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-bg span {
+    animation: none;
+  }
+}
+
+.home-page ion-header ion-toolbar {
+  --background: var(--app-glass);
+  --border-width: 0;
+  --min-height: 64px;
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.home-page ion-menu-button {
+  --color: var(--app-heading);
+}
+
+.theme-toggle {
+  --color: var(--app-accent);
+  margin-inline-end: 8px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--app-heading);
+}
+
+.brand ion-icon {
+  color: var(--app-accent);
+}
+
+.home-content {
+  --background: transparent;
+  --color: var(--app-text);
+}
+
+.wrap {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+  box-sizing: border-box;
+}
+
+.lead {
+  margin: 4px 4px 16px;
+  font-size: 0.95rem;
+  color: var(--app-muted);
+}
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--app-border);
+  border-radius: 22px;
+  background: var(--app-card);
+  box-shadow: var(--app-shadow);
+  backdrop-filter: blur(20px);
+}
+
+.form-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--app-heading);
+}
+
+.task-form ion-input,
+.task-form ion-textarea {
+  --background: var(--app-field);
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  --border-radius: 14px;
+  --color: var(--app-text);
+  --placeholder-color: var(--app-muted);
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+}
+
+.task-form ion-textarea {
+  --padding-top: 4px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.primary-btn {
+  --background: linear-gradient(135deg, #7c5cff 0%, #22d3ee 100%);
+  --background-hover: linear-gradient(135deg, #8a6cff 0%, #38dcf5 100%);
+  --color: #ffffff;
+  --border-radius: 14px;
+  --box-shadow: 0 12px 26px -14px rgba(124, 92, 255, 0.9);
+  font-weight: 600;
+  text-transform: none;
+}
+
+.ghost-btn {
+  --color: var(--app-muted);
+  text-transform: none;
+}
+
+.task-list {
+  margin: 18px 0 0;
+  padding: 0;
+  background: transparent;
+}
+
+.task-item {
+  --background: var(--app-card);
+  --border-radius: 18px;
+  --padding-start: 16px;
+  --inner-padding-end: 6px;
+  --min-height: 76px;
+  margin: 0 0 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  box-shadow: var(--app-shadow);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.task-item.is-editing {
+  border-color: rgba(124, 92, 255, 0.65);
+  box-shadow:
+    0 0 0 1px rgba(124, 92, 255, 0.35),
+    0 18px 36px -26px rgba(124, 92, 255, 0.9);
+}
+
+.task-item ion-label h2 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--app-heading);
+  white-space: normal;
+}
+
+.task-item ion-label p {
+  color: var(--app-muted);
+  font-size: 0.85rem;
+  white-space: normal;
+}
+
+.icon-btn {
+  --color: var(--app-muted);
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 38px;
+}
+
+.icon-btn.danger {
+  --color: #f472b6;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 40px;
+  padding: 34px 20px;
+  border: 1px dashed var(--app-border);
+  border-radius: 22px;
+  background: var(--app-card);
+  text-align: center;
+  color: var(--app-muted);
+}
+
+.empty-state ion-icon {
+  font-size: 2rem;
+  color: var(--app-accent);
+}
+
+.empty-state p {
+  margin: 4px 0 0;
+  font-weight: 600;
+  color: var(--app-heading);
+}

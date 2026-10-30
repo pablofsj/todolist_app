@@ -1,0 +1,44 @@
+.about-page {
+  background: var(--app-bg);
+}
+
+.about-page ion-header ion-toolbar {
+  --background: var(--app-glass);
+  --border-width: 0;
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-heading);
+}
+
+.about-page ion-menu-button {
+  --color: var(--app-heading);
+}
+
+.about-content {
+  --background: var(--app-bg-gradient);
+  --color: var(--app-text);
+}
+
+.about-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 56px;
+  line-height: 1.55;
+}
+
+.about-title {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--app-heading);
+}
+
+.about-lead {
+  margin: 0 0 8px;
+  color: var(--app-muted);
+}
+
+.about-wrap p {
+  margin: 0;
+}

@@ -1,0 +1,45 @@
+.menu-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--app-heading);
+}
+
+.menu-brand ion-icon {
+  color: var(--app-accent);
+}
+
+ion-menu {
+  --background: var(--app-bg);
+  --ion-background-color: var(--app-bg);
+}
+
+ion-menu ion-toolbar {
+  --background: var(--app-glass);
+  --border-width: 0;
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.menu-list {
+  padding: 12px 8px;
+  background: transparent;
+}
+
+.menu-list ion-item {
+  --background: transparent;
+  --border-radius: 14px;
+  --color: var(--app-text);
+  margin-bottom: 6px;
+  border-radius: 14px;
+}
+
+.menu-list ion-item.item-has-focus,
+.menu-list ion-item:hover {
+  --background: var(--app-card);
+}
+
+.menu-list ion-icon {
+  color: var(--app-accent);
+}
