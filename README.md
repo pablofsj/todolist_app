@@ -51,8 +51,9 @@ superficies de vidrio esmerilado y acentos violeta/cian.
 ## Requisitos para ejecución
 
 - Node.js 20 o superior (probado con Node 24) y npm
-- Ionic CLI instalado globalmente: `npm install -g @ionic/cli`
 - Navegador moderno
+- No hace falta instalar Ionic CLI globalmente: se ejecuta con `npx`, que lo descarga
+  automáticamente la primera vez.
 
 ## Pasos de ejecución
 
@@ -61,11 +62,13 @@ superficies de vidrio esmerilado y acentos violeta/cian.
 npm install
 
 # 2. Levantar la aplicación (disponible en http://localhost:8100)
-ionic serve
+npx --yes @ionic/cli serve
 
 # Alternativa con Vite directamente (http://localhost:5173)
 npm run dev
 ```
+
+Si ya tenés Ionic CLI instalado globalmente, `ionic serve` también funciona.
 
 Otros comandos:
 
