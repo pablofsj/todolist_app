@@ -68,7 +68,7 @@ npx --yes @ionic/cli serve
 npm run dev
 ```
 
-Si ya tenés Ionic CLI instalado globalmente, `ionic serve` también funciona.
+Si ya tienes Ionic CLI instalado globalmente, `ionic serve` también funciona.
 
 Otros comandos:
 
