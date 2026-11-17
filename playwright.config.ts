@@ -15,7 +15,12 @@ export default defineConfig({
   projects: [
     {
       name: 'Mobile Chrome',
-      use: { ...devices['Pixel 7'] },
+      use: {
+        ...devices['Pixel 7'],
+        permissions: ['geolocation'],
+        geolocation: { latitude: -33.4489, longitude: -70.6693 },
+        locale: 'es-CL',
+      },
     },
   ],
   webServer: {
