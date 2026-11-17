@@ -18,10 +18,14 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
     "@capacitor/app": "8.1.2",
+    "@capacitor/camera": "^8.2.6",
     "@capacitor/core": "8.5.3",
+    "@capacitor/geolocation": "^8.2.5",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.6",
+    "@capacitor/preferences": "^8.0.1",
     "@capacitor/status-bar": "8.0.4",
     "@ionic/react": "^9.0.0",
     "@ionic/react-router": "^9.0.0",
@@ -56,5 +60,5 @@
     "vitest": "~5.0.5"
   },
   "prettier": "@ionic/prettier-config",
-  "description": "ToDo List construida con Ionic React y estilo Aurora UI"
+  "description": "ToDo List con Ionic React, almacenamiento local, autenticación, cámara, GPS y API externa (EVA1 + EVA2)"
 }

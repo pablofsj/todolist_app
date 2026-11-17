@@ -2,9 +2,12 @@ import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/r
 import { IonReactRouter } from '@ionic/react-router';
 import { Navigate, Route } from 'react-router-dom';
 
+import AuthProvider from './components/AuthProvider';
 import Menu from './components/Menu';
+import { useAuth } from './lib/auth-context';
 import About from './pages/About';
 import Home from './pages/Home';
+import Login from './pages/Login';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -38,8 +41,13 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
+const AppContent: React.FC = () => {
+  const { user, ready } = useAuth();
+
+  if (!ready) return null;
+  if (!user) return <Login />;
+
+  return (
     <IonReactRouter>
       <IonSplitPane contentId="main" when="md">
         <Menu />
@@ -50,6 +58,14 @@ const App: React.FC = () => (
         </IonRouterOutlet>
       </IonSplitPane>
     </IonReactRouter>
+  );
+};
+
+const App: React.FC = () => (
+  <IonApp>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   </IonApp>
 );
 

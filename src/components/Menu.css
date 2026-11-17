@@ -43,3 +43,20 @@ ion-menu ion-toolbar {
 .menu-list ion-icon {
   color: var(--app-accent);
 }
+
+.menu-user {
+  margin: 16px 18px 4px;
+  font-size: 0.8rem;
+  color: var(--app-muted);
+}
+
+.menu-logout {
+  --background: transparent;
+  --color: var(--app-muted);
+  margin: 4px 8px;
+  border-radius: 14px;
+}
+
+.menu-logout ion-icon {
+  color: #f472b6;
+}
