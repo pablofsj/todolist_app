@@ -104,8 +104,9 @@ importación y sincronización con la API (con respuestas simuladas).
 
 ![Resultado de las pruebas end-to-end](docs/screenshots/eva2/07-pruebas-e2e.png)
 
-La evidencia se capturó con Chromium en modo móvil porque el entorno de desarrollo no incluye Android
-SDK ni emulador. Para validar los periféricos nativos hay que ejecutar la app desde Android Studio.
+La evidencia se capturó con Chromium en modo móvil; la versión nativa se ejecuta desde Android Studio
+abriendo el proyecto `android/`, donde se pueden validar la cámara y el GPS en un emulador o
+dispositivo.
 
 ## Capturas de pantalla
 
