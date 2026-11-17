@@ -1,10 +1,11 @@
 import { Camera } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { capturePhoto, currentLocation } from './device';
 
-vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => true } }));
+vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: vi.fn(() => true) } }));
 
 vi.mock('@capacitor/camera', () => ({
   Camera: {
@@ -29,6 +30,7 @@ const geolocation = vi.mocked(Geolocation);
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(Capacitor.isNativePlatform).mockReturnValue(true);
 });
 
 describe('capturePhoto', () => {
@@ -84,5 +86,23 @@ describe('currentLocation', () => {
 
     await expect(currentLocation()).resolves.toEqual({ latitude: 1, longitude: 2 });
     expect(geolocation.requestPermissions).not.toHaveBeenCalled();
+  });
+
+  test('en web no llama a requestPermissions y usa la geolocalización del navegador', async () => {
+    vi.mocked(Capacitor.isNativePlatform).mockReturnValue(false);
+    geolocation.getCurrentPosition.mockResolvedValue({
+      coords: { latitude: -33.4489, longitude: -70.6693 },
+    } as never);
+
+    await expect(currentLocation()).resolves.toEqual({ latitude: -33.4489, longitude: -70.6693 });
+    expect(geolocation.checkPermissions).not.toHaveBeenCalled();
+    expect(geolocation.requestPermissions).not.toHaveBeenCalled();
+  });
+
+  test('traduce el rechazo del navegador a un mensaje claro', async () => {
+    vi.mocked(Capacitor.isNativePlatform).mockReturnValue(false);
+    geolocation.getCurrentPosition.mockRejectedValue({ code: 1 });
+
+    await expect(currentLocation()).rejects.toThrow('Permiso de ubicación denegado');
   });
 });

@@ -5,9 +5,6 @@ empaquetada con **Capacitor**. Este repositorio reúne las dos entregas del proy
 base de la **EVA1** y la ampliación de la **EVA2** con almacenamiento local, usuarios, cámara, GPS e
 integración con una API externa.
 
-La interfaz mantiene el estilo **Aurora UI**: degradados suaves, superficies de vidrio esmerilado y
-acentos violeta/cian.
-
 # EVA2: usuarios, periféricos y API
 
 La segunda entrega amplía la aplicación con las funcionalidades avanzadas pedidas en la evaluación.
