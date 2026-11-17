@@ -1,9 +1,170 @@
 # ToDo List
 
-Aplicación móvil de lista de tareas construida con **Ionic Framework + React**. Permite crear,
-editar y eliminar tareas (título y descripción), navegar entre la lista y una sección informativa,
-y alternar entre modo claro y oscuro. La interfaz sigue el estilo **Aurora UI**: degradados suaves,
-superficies de vidrio esmerilado y acentos violeta/cian.
+Aplicación móvil de lista de tareas construida con **Ionic Framework + React + TypeScript** y
+empaquetada con **Capacitor**. Este repositorio reúne las dos entregas del proyecto: la aplicación
+base de la **EVA1** y la ampliación de la **EVA2** con almacenamiento local, usuarios, cámara, GPS e
+integración con una API externa.
+
+La interfaz mantiene el estilo **Aurora UI**: degradados suaves, superficies de vidrio esmerilado y
+acentos violeta/cian.
+
+# EVA2: usuarios, periféricos y API
+
+La segunda entrega amplía la aplicación con las funcionalidades avanzadas pedidas en la evaluación.
+
+## Funcionalidades agregadas
+
+- **Autenticación local multiusuario:** registro e inicio de sesión con usuario y contraseña. La
+  contraseña nunca se guarda en texto plano: se almacena un hash SHA-256 con sal única por usuario.
+- **Sesión persistente:** al recargar la aplicación se mantiene el usuario activo hasta cerrar
+  sesión desde el menú lateral.
+- **Tareas por usuario:** cada cuenta tiene su propia lista, guardada en el dispositivo con
+  `@capacitor/preferences` (en web usa `localStorage`). Las tareas sobreviven a la recarga, cierre de
+  la aplicación o reinicio del navegador.
+- **Cámara:** el botón **Adjuntar foto** captura o elige una imagen con `@capacitor/camera` y la
+  guarda junto a la tarea. La foto se muestra en la vista previa y en la lista.
+- **GPS:** al crear una tarea se registra la ubicación actual con `@capacitor/geolocation`. Las
+  coordenadas se muestran en la tarea y enlazan a Google Maps.
+- **Importación desde API:** descarga tareas desde una API pública y las agrega a la lista sin
+  duplicar las que ya existen.
+- **Sincronización con API:** envía las tareas locales a la API mediante `POST` e informa cuántas se
+  sincronizaron.
+- **Plataforma Android:** proyecto nativo generado con `@capacitor/android`, con los permisos de
+  cámara y ubicación declarados en el manifiesto.
+
+## Permisos del dispositivo
+
+| Permiso | Plugin / plataforma | Uso |
+| --- | --- | --- |
+| `CAMERA` | `@capacitor/camera` | Capturar o adjuntar una foto a la tarea |
+| `READ_MEDIA_IMAGES` / `READ_EXTERNAL_STORAGE` | `@capacitor/camera` | Elegir una imagen de la galería en Android |
+| `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION` | `@capacitor/geolocation` | Registrar latitud y longitud de la tarea |
+| `INTERNET` | API externa | Importar y sincronizar tareas |
+
+Antes de usar cada periférico se consulta el estado del permiso con `checkPermissions()` y, si es
+necesario, se solicita con `requestPermissions()`. Si el usuario lo deniega, la aplicación muestra un
+mensaje claro: la tarea se guarda sin ubicación y la foto no se adjunta, sin bloquear el resto del
+flujo. En Android los permisos están declarados en `android/app/src/main/AndroidManifest.xml` y las
+funciones de cámara y GPS se marcan como opcionales (`uses-feature required="false"`).
+
+## Integración con la API
+
+Se usa [JSONPlaceholder](https://jsonplaceholder.typicode.com), una API pública de demostración que
+no requiere clave:
+
+- **Importar:** `GET /todos?_limit=5`. Las tareas recibidas se normalizan y se agregan solo si su
+  identificador no estaba en la lista.
+- **Sincronizar:** `POST /todos` por cada tarea local, enviando título y descripción.
+
+Al ser una API de demostración, el servicio responde con éxito pero no conserva los datos enviados.
+La lógica está aislada en `src/lib/api.ts` para poder cambiar la URL por la de un backend real sin
+tocar la interfaz.
+
+## Requisitos y ejecución
+
+- Node.js 20 o superior (probado con Node 24) y npm
+- Navegador moderno para la versión web
+- Android Studio con Android SDK para compilar la aplicación nativa
+
+```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Ejecutar en el navegador (http://localhost:8100)
+npx --yes @ionic/cli serve
+
+# Alternativa con Vite directamente (http://localhost:5173)
+npm run dev
+
+# 3. Compilar la versión web y sincronizarla con Android
+npm run build
+npx cap sync android
+
+# 4. Abrir el proyecto nativo en Android Studio
+npx cap open android
+```
+
+Desde Android Studio se ejecuta la app en un emulador o dispositivo con los permisos de cámara y
+ubicación habilitados. En la versión web, la cámara abre el selector de archivos y el GPS usa la
+geolocalización del navegador, por lo que conviene probar los periféricos en un dispositivo real.
+
+## Pruebas
+
+```bash
+npm run test:unit    # Vitest: 24 pruebas en 6 archivos
+npm run test:e2e     # Playwright: 3 pruebas end-to-end
+npm run lint         # ESLint + TypeScript + Prettier
+```
+
+Las pruebas unitarias cubren las operaciones de tareas, el almacenamiento por usuario, la creación y
+verificación de credenciales, los permisos de cámara y GPS (incluidos los casos denegados) y la
+importación/sincronización con la API. Las pruebas end-to-end recorren el registro, la creación de
+una tarea con foto y coordenadas, la persistencia tras recargar, la edición/eliminación y el flujo de
+importación y sincronización con la API (con respuestas simuladas).
+
+![Resultado de las pruebas end-to-end](docs/screenshots/eva2/07-pruebas-e2e.png)
+
+La evidencia se capturó con Chromium en modo móvil porque el entorno de desarrollo no incluye Android
+SDK ni emulador. Para validar los periféricos nativos hay que ejecutar la app desde Android Studio.
+
+## Capturas de pantalla
+
+| Inicio de sesión | Registro de usuario |
+| --- | --- |
+| <img src="docs/screenshots/eva2/01-login.png" width="300" alt="Inicio de sesión" /> | <img src="docs/screenshots/eva2/02-registro.png" width="300" alt="Registro de usuario" /> |
+
+| Tarea con foto adjunta | Tarea guardada con GPS |
+| --- | --- |
+| <img src="docs/screenshots/eva2/03-nueva-tarea-perifericos.png" width="300" alt="Formulario con foto adjunta" /> | <img src="docs/screenshots/eva2/04-tarea-guardada.png" width="300" alt="Tarea guardada con foto y ubicación" /> |
+
+| Menú con sesión activa | Importación desde la API |
+| --- | --- |
+| <img src="docs/screenshots/eva2/05-menu-sesion.png" width="300" alt="Menú lateral con usuario y cierre de sesión" /> | <img src="docs/screenshots/eva2/06-importar-api.png" width="300" alt="Tareas importadas desde la API" /> |
+
+## Estructura del proyecto
+
+```text
+todolist_app/
+├── android/                     # Proyecto Android generado por Capacitor
+├── docs/screenshots/            # Capturas de la EVA1
+├── docs/screenshots/eva2/       # Capturas y evidencia de la EVA2
+├── e2e/app.spec.ts              # Pruebas end-to-end (Playwright)
+├── public/                      # favicon y manifest
+├── src/
+│   ├── components/
+│   │   ├── AuthProvider.tsx     # Estado de sesión y acciones de autenticación
+│   │   ├── Menu.tsx             # Menú lateral con usuario y cierre de sesión
+│   │   └── Menu.css
+│   ├── lib/
+│   │   ├── api.ts               # Importación y sincronización con la API
+│   │   ├── auth.ts              # Hash con sal y validación de credenciales
+│   │   ├── auth-context.ts      # Contexto de autenticación
+│   │   ├── device.ts            # Cámara y GPS con manejo de permisos
+│   │   ├── storage.ts           # Persistencia con @capacitor/preferences
+│   │   ├── tasks.ts             # Tipo Task y operaciones puras
+│   │   └── *.test.ts            # Pruebas unitarias
+│   ├── pages/
+│   │   ├── Login.tsx            # Registro e inicio de sesión
+│   │   ├── Login.css
+│   │   ├── Home.tsx             # Lista, formulario, periféricos y API
+│   │   ├── Home.css
+│   │   ├── About.tsx            # Página informativa breve
+│   │   └── About.css
+│   ├── theme/variables.css      # Tokens de color para modo claro y oscuro
+│   ├── App.tsx                  # Root: autenticación, router y menú
+│   └── main.tsx                 # Punto de entrada de React
+├── capacitor.config.ts
+├── ionic.config.json
+├── playwright.config.ts
+├── vite.config.ts
+└── package.json
+```
+
+# EVA1: aplicación base de tareas
+
+Primera entrega del proyecto: una aplicación móvil con Ionic que permite crear, editar y eliminar
+tareas (título y descripción), navegar entre la lista y una sección informativa, y alternar entre
+modo claro y oscuro. Los pasos de instalación y ejecución son los mismos de la sección anterior.
 
 ## Stack técnico
 
@@ -46,68 +207,8 @@ superficies de vidrio esmerilado y acentos violeta/cian.
 
 `IonApp`, `IonReactRouter`, `IonRouterOutlet`, `IonSplitPane`, `IonMenu`, `IonMenuButton`,
 `IonMenuToggle`, `IonPage`, `IonHeader`, `IonToolbar`, `IonTitle`, `IonButtons`, `IonContent`,
-`IonList`, `IonItem`, `IonLabel`, `IonInput`, `IonTextarea`, `IonButton`, `IonIcon` e `IonNote`.
-
-## Requisitos para ejecución
-
-- Node.js 20 o superior (probado con Node 24) y npm
-- Navegador moderno
-- No hace falta instalar Ionic CLI globalmente: se ejecuta con `npx`, que lo descarga
-  automáticamente la primera vez.
-
-## Pasos de ejecución
-
-```bash
-# 1. Instalar dependencias
-npm install
-
-# 2. Levantar la aplicación (disponible en http://localhost:8100)
-npx --yes @ionic/cli serve
-
-# Alternativa con Vite directamente (http://localhost:5173)
-npm run dev
-```
-
-Si ya tienes Ionic CLI instalado globalmente, `ionic serve` también funciona.
-
-Otros comandos:
-
-```bash
-npm run build        # compila TypeScript y genera dist/
-npm run test:unit    # pruebas unitarias de las operaciones de tareas
-npm run test:e2e     # e2e: agregar, editar y eliminar (Playwright)
-npm run lint         # ESLint + Prettier
-```
-
-## Estructura del proyecto
-
-```text
-todolist_app/
-├── docs/screenshots/          # Capturas de la aplicación
-├── e2e/app.spec.ts            # Prueba end-to-end del flujo de tareas
-├── public/                    # favicon y manifest
-├── src/
-│   ├── components/
-│   │   ├── Menu.tsx           # Menú lateral de navegación
-│   │   └── Menu.css
-│   ├── lib/
-│   │   ├── tasks.ts           # Tipo Task y operaciones puras
-│   │   └── tasks.test.ts      # Pruebas unitarias
-│   ├── pages/
-│   │   ├── Home.tsx           # Lista, formulario y toggle de tema
-│   │   ├── Home.css
-│   │   ├── About.tsx          # Página informativa breve
-│   │   └── About.css
-│   ├── theme/variables.css    # Tokens de color para modo claro y oscuro
-│   ├── App.tsx                # Root: router, menú y CSS base
-│   └── main.tsx               # Punto de entrada de React
-├── AGENTS.md                  # Contexto para agentes de código
-├── capacitor.config.ts
-├── ionic.config.json
-├── playwright.config.ts
-├── vite.config.ts
-└── package.json
-```
+`IonList`, `IonItem`, `IonLabel`, `IonInput`, `IonTextarea`, `IonButton`, `IonIcon`, `IonNote` e
+`IonToast`.
 
 ## Capturas de pantalla
 
